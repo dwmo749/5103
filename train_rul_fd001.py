@@ -566,9 +566,9 @@ def main():
     X_test_last_tensor = torch.tensor(X_test_last, dtype=torch.float32)
 
     # Train models
-    X_train_whole = train_scaled[feature_cols].values  # 实际上你需要按unit和cycle排好序形成 [B, T, N] tensor
-    X_train_whole = X_train_whole.reshape(-1, args.seq_len, len(feature_cols)).astype(np.float32)
-    q_mat = get_q_matrix(X_train_whole)  # 输出形状为 [T, T]
+    # X_train_whole = train_scaled[feature_cols].values  # 实际上你需要按unit和cycle排好序形成 [B, T, N] tensor
+    # X_train_whole = X_train_whole.reshape(-1, args.seq_len, len(feature_cols)).astype(np.float32)
+    q_mat = get_q_matrix(X_train)  # 输出形状为 [T, T]
     trained = {}
     histories = {}
     to_run = []
