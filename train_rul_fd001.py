@@ -44,7 +44,9 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
-
+from Olinear import OrthoTrans, get_q_matrix
+from Otransformer import OTransformerRegressor
+from LearnableAdjGNNLSTMRegressor import LeanableAdjGNNLSTMRegressor
 
 # -----------------------------
 # Utils & Reproducibility
@@ -448,7 +450,7 @@ def main():
     parser.add_argument('--epochs', type=int, default=20, help='Training epochs')
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
     parser.add_argument('--val_ratio', type=float, default=0.2, help='Validation ratio by unit')
-    parser.add_argument('--models', type=str, default='all', choices=['all', 'rnn', 'lstm', 'transformer', 'gnn'], help='Which model(s) to train')
+    parser.add_argument('--models', type=str, default='all', choices=['all', 'rnn', 'lstm', 'transformer','otransformer', 'gnn', 'learnable_gnn'], help='Which model(s) to train')
     parser.add_argument('--save_dir', type=str, default='artifacts', help='Directory to save model weights')
     parser.add_argument('--out_dir', type=str, default='outputs', help='Directory to save outputs and figures')
     parser.add_argument('--seed', type=int, default=42, help='Random seed')
@@ -564,11 +566,14 @@ def main():
     X_test_last_tensor = torch.tensor(X_test_last, dtype=torch.float32)
 
     # Train models
+    X_train_whole = train_scaled[feature_cols].values  # 实际上你需要按unit和cycle排好序形成 [B, T, N] tensor
+    X_train_whole = X_train_whole.reshape(-1, args.seq_len, len(feature_cols)).astype(np.float32)
+    q_mat = get_q_matrix(X_train_whole)  # 输出形状为 [T, T]
     trained = {}
     histories = {}
     to_run = []
     if args.models == 'all':
-        to_run = ['rnn', 'lstm', 'transformer', 'gnn']
+        to_run = ['rnn', 'lstm', 'transformer', 'otransformer', 'gnn', 'learnable_gnn']
     else:
         to_run = [args.models]
 
@@ -579,9 +584,18 @@ def main():
             model = LSTMRegressor(input_dim=X_dim, hidden_dim=64, num_layers=2)
         elif name == 'transformer':
             model = TransformerRegressor(input_dim=X_dim, d_model=128, nhead=4, num_layers=2, dim_feedforward=256, dropout=0.1)
+        elif name == 'otransformer':
+            model = OTransformerRegressor(input_dim=X_dim, seq_len=args.seq_len, q_mat=q_mat,
+                                      embed_size=4, d_model=128, nhead=4, num_layers=2)
         elif name == 'gnn':
             model = GNNLSTMRegressor(num_nodes=X_dim, adj_matrix=A_hat, node_feat_dim=args.gnn_node_dim,
                                      gcn_layers=2, lstm_hidden=args.gnn_lstm_hidden, lstm_layers=args.gnn_lstm_layers)
+        elif name == 'learnable_gnn':
+            model = LeanableAdjGNNLSTMRegressor(num_nodes=X_dim,
+                                           node_feat_dim=args.gnn_node_dim,
+                                           gcn_layers=2,
+                                           lstm_hidden=args.gnn_lstm_hidden,
+                                           lstm_layers=args.gnn_lstm_layers)
         else:
             raise ValueError('Unknown model: ' + name)
 
