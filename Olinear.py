@@ -223,7 +223,7 @@ class OrthoTrans(nn.Module):
         B, T, N = x.shape
 
         # revin norm
-        x = self.revin_layer(x, mode='norm')
+        # x = self.revin_layer(x, mode='norm')
         x_ori = x
 
         # ###########  frequency (high-level) part ##########

@@ -48,6 +48,7 @@ from Olinear import OrthoTrans, get_q_matrix
 from Otransformer import OTransformerRegressor
 from LearnableAdjGNNLSTMRegressor import LeanableAdjGNNLSTMRegressor
 
+
 # -----------------------------
 # Utils & Reproducibility
 # -----------------------------
@@ -431,7 +432,7 @@ def plot_and_save_test_comparison(y_true: np.ndarray, preds_dict: Dict[str, np.n
         rmse = float(np.sqrt(mean_squared_error(y_true, preds)))
         rows.append({'Model': name, 'MAE': mae, 'RMSE': rmse})
     dfm = pd.DataFrame(rows)
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(8, 6))
     ax = sns.barplot(data=dfm.melt(id_vars='Model'), x='Model', y='value', hue='variable')
     ax.set_title('Test metrics comparison')
     plt.tight_layout()
