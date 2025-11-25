@@ -2,27 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-CMAPSS FD001 剩余寿命（RUL）预测脚本：支持 RNN / LSTM / Transformer
-
-功能概览：
-- 稳健数据读取（自动处理无表头、逗号或空白分隔）
-- 预处理（去低方差传感器、MinMax归一化、滑动窗口序列化、按发动机划分训练/验证）
-- 模型（RNN/LSTM/Transformer，PyTorch实现）
-- 训练与验证（MSELoss + Adam，输出损失曲线）
-- 测试评估（每台测试发动机的最后窗口预测，指标：MAE/RMSE）
-- 可视化图表保存（EDA、训练曲线、预测散点与残差、指标对比）
-- 模型与预测保存
-
-用法示例：
-  python train_rul_fd001.py --data_dir data/ --models all --epochs 20 --seq_len 30 --batch_size 128
-  python train_rul_fd001.py --data_dir data/ --models transformer --epochs 15 --seq_len 50
-  python train_rul_fd001.py --models all --epochs 20 --seq_len 30 --batch_size 128 --sensor_set paper --scaler zscore --rul_piecewise --rul_max 130
-
-依赖：pandas numpy scikit-learn matplotlib seaborn torch tqdm
-  pip install pandas numpy scikit-learn matplotlib seaborn torch tqdm
-
-注意：本脚本默认数据目录结构为 NASA CMAPSS 的 FD001 版本：
-- train_FD001.csv, test_FD001.csv, RUL_FD001.csv
+python train_rul_fd001.py --data_dir data/ --models all --epochs 20 --seq_len 30 --batch_size 128
+python train_rul_fd001.py --data_dir data/ --models transformer --epochs 15 --seq_len 50
+python train_rul_fd001.py --models all --epochs 20 --seq_len 30 --batch_size 128 --sensor_set paper --scaler zscore --rul_piecewise --rul_max 130
 """
 
 import os
@@ -645,4 +627,5 @@ def main():
 
 
 if __name__ == '__main__':
+
     main()
