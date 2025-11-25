@@ -3,10 +3,13 @@
 This project provide a train and predict script for NASA CMAPSS FD001 Turbo Fan dataset, support some of machine learn models including `RNN`, `LSTM`, `Transformer`, `oTransformer`, `GNN+LSTM`, and `Learnable GNN+LSTM`.
 
 ## File structure and dataset
-- `train_rul_fd001.py`：trainning script
-- `data/`：FD001 dataset file folder
-- `artifacts/`：model weight folder
-- `outputs/`：trainning curve and result folder
+- `train_rul_fd001.py`: Trainning script
+- `data/`: FD001 dataset file folder
+- `artifacts/`: Model weight folder
+- `outputs/`: Trainning curve and result folder
+- `LearnableAdjGNNLSTMRegressor.py`: Learnable GNN+LSTM module
+- `Olinear.py`: Orthogonality linear module
+- `Otransformer.py`: Orthogonality transformer module
 
 
 ## Dependency Installation
